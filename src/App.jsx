@@ -8,6 +8,7 @@ class App extends Component {
 
     this.state = {
       monsters: [],
+      searchField: "",
     };
   }
 
@@ -29,6 +30,15 @@ class App extends Component {
 
   render() {
     //2
+    //4
+
+    //fliter出monsters名
+    //[{name:""},{name:""}]
+    //要將字轉為小寫(toLocaleLowerCase())
+    //素が配列に含まれているかどうかを true または false で返します()includes()
+    const filteredMonsters = this.state.monsters.filter((monster) =>
+      monster.name.toLocaleLowerCase().includes(this.state.searchField)
+    );
 
     return (
       <div className="App">
@@ -37,17 +47,19 @@ class App extends Component {
           type="search"
           placeholden="search monsters"
           onChange={(event) => {
-            const searchString = event.target.value.toLocaleLowerCase();
-            const filteredMonsters = this.state.monsters.filter((monster) =>
-              monster.name.toLocaleLowerCase().includes(searchString)
-            );
+            //要將字轉為小寫
+            const searchField = event.target.value.toLocaleLowerCase();
+
+            //改state
+            //因為要儲係componment既state
             this.setState(() => {
-              return { monsters: filteredMonsters };
+              return { searchField }; //searchField:searchField
             });
           }}
         />
 
-        {this.state.monsters.map((monster) => {
+        {/* 用fliter出monsters名做map */}
+        {filteredMonsters.map((monster) => {
           return <h1 key={monster.name}>{monster.name}</h1>;
         })}
       </div>
