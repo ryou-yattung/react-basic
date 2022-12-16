@@ -1,70 +1,68 @@
-import { Component } from "react";
+import React from "react";
+import { useState } from "react";
+import CardList from "./components/card-list/";
+import SearchBox from "./components/search-box";
 import "./App.css";
+import { useEffect } from "react";
 
-class App extends Component {
-  //1
-  constructor() {
-    super();
+function App() {
+  //fetchしたdataをmonstersに
+  const [monsters, setMonsters] = useState([]);
+  //search-barの文字をsearchFieldに
+  const [searchField, setSearchField] = useState("");
+  //filteredMonsters
+  const [filteredMonsters, setFilteredMonsters] = useState(monsters);
+  //第一格test用
+  const [stringFild, setStringFild] = useState("");
 
-    this.state = {
-      monsters: [],
-      searchField: "",
-    };
-  }
+  console.log("render");
 
-  //componentDidMount只RUN 1次(DOM ノードを必要とする初期化はここで行われる)
-  //所以好快
-  componentDidMount() {
-    //3
+  useEffect(() => {
+    console.log("effect");
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
-      .then((users) =>
-        this.setState(
-          () => {
-            return { monsters: users }; //return返個名去state
-          },
-          () => console.log(this.state)
-        )
-      );
-  }
+      .then((users) => setMonsters(users));
+  }, []);
 
-  render() {
-    //2
-    //4
+  useEffect(() => {
+    const newFilteredMonsters = monsters.filter((monster) => {
+      return monster.name.toLocaleLowerCase().includes(searchField);
+    });
 
-    //fliter出monsters名
-    //[{name:""},{name:""}]
-    //要將字轉為小寫(toLocaleLowerCase())
-    //素が配列に含まれているかどうかを true または false で返します()includes()
-    const filteredMonsters = this.state.monsters.filter((monster) =>
-      monster.name.toLocaleLowerCase().includes(this.state.searchField)
-    );
+    setFilteredMonsters(newFilteredMonsters);
+  }, [monsters, searchField]);
 
-    return (
-      <div className="App">
-        <input
-          className="search-box"
-          type="search"
-          placeholden="search monsters"
-          onChange={(event) => {
-            //要將字轉為小寫
-            const searchField = event.target.value.toLocaleLowerCase();
+  const onSeachChange = (event) => {
+    //要將字轉為小寫
+    const searchFieldString = event.target.value.toLocaleLowerCase();
+    //改state
+    setSearchField(searchFieldString);
+  };
 
-            //改state
-            //因為要儲係componment既state
-            this.setState(() => {
-              return { searchField }; //searchField:searchField
-            });
-          }}
-        />
+  //第一格用useEffect
+  const onStringChange = (event) => {
+    setStringFild(event.target.value);
+  };
 
-        {/* 用fliter出monsters名做map */}
-        {filteredMonsters.map((monster) => {
-          return <h1 key={monster.name}>{monster.name}</h1>;
-        })}
-      </div>
-    );
-  }
+  return (
+    <>
+      <SearchBox
+        onSeachChange={onStringChange}
+        placeholden={"monster-search"}
+        className={"monster-search-box"}
+      />
+
+      <h1 className="app-title">My monsters list</h1>
+
+      <SearchBox
+        onSeachChange={onSeachChange}
+        placeholden={"monster-search"}
+        className={"monster-search-box"}
+      />
+
+      <CardList monsters={filteredMonsters} />
+    </>
+  );
 }
 
 export default App;
