@@ -12,8 +12,8 @@ function App() {
   const [searchField, setSearchField] = useState("");
   //filteredMonsters
   const [filteredMonsters, setFilteredMonsters] = useState(monsters);
-  //第一格test用
-  const [stringFild, setStringFild] = useState("");
+  //title name set
+  const [title, setTitle] = useState("My monsters");
 
   console.log("render");
 
@@ -39,21 +39,20 @@ function App() {
     setSearchField(searchFieldString);
   };
 
-  //第一格用useEffect
-  const onStringChange = (event) => {
-    setStringFild(event.target.value);
+  const onTitileChange = (event) => {
+    setTitle(event.target.value);
   };
 
   return (
     <>
+      <h1 className="app-title">{title}</h1>
+
       <SearchBox
-        onSeachChange={onStringChange}
-        placeholden={"monster-search"}
+        onSeachChange={onTitileChange}
+        placeholden={"titilec hange"}
         className={"monster-search-box"}
       />
-
-      <h1 className="app-title">My monsters list</h1>
-
+      <br />
       <SearchBox
         onSeachChange={onSeachChange}
         placeholden={"monster-search"}
